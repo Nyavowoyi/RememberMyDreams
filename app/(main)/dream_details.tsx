@@ -61,7 +61,7 @@ const DreamDetails = () => {
     navigation.setOptions({
       headerRight: () => (
         <Pressable onPress={updateDream} style={styles.icon}>
-          <ThemedView><Ionicons name='pencil' size={22} /></ThemedView>
+          <ThemedView><ThemedText><Ionicons name='pencil' size={22} /></ThemedText></ThemedView>
         </Pressable>
       ),
     })
@@ -78,13 +78,15 @@ const DreamDetails = () => {
           <ThemedText>Dream ID: {id}</ThemedText>
 
 
-          <ThemedView style={[styles.container,]}>
+          <ThemedView style={[]}>
             <ThemedText>Title:</ThemedText>
             <ThemedText>{dreamObj.title}</ThemedText>
 
           </ThemedView>
 
           <ThemedView style={{ display: `${showUpdateScreen ? 'flex' : 'none'}`, }}>
+
+          
 
                 {/* Form */}
                 <Formik

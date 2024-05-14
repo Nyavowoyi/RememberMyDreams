@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { ThemedView } from '../ThemedView'
 import { ThemedText } from '../ThemedText'
@@ -8,7 +8,7 @@ import dayjs from 'dayjs'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { TextInput } from 'react-native-paper'
 import { Ionicons } from '@expo/vector-icons'
-import { IDream } from '@/models/dream'
+import { Dream, IDream } from '@/models/dream'
 import { useDreamsContext } from '@/store/dreams-context'
 
 // The Form's validation schema
@@ -33,18 +33,16 @@ const DreamForm = ({mode, dreamProps} : {mode: 'create' | 'update', dreamProps :
     const [showUpdateScreen, toggleShowUpdateScreen] = useState(false);
     const dreamsCtx = useDreamsContext();
 
-    if(mode === 'create') {
-        dreamObj = {
-                id: null, title: `New dream on ${'ddd, MMM D YYYY h:mm a'}`, description: 'I had a dream which goes like ...',  date: dayjs(dreamProps?.date).subtract(5, 'hours').toDate().toString(),
-            }
-    } else {
+    let dreamObj : DreamPropsInterface = { id: null, title: `New dream on ${'ddd, MMM D YYYY h:mm a'}`, description: 'I had a dream which goes like ...',  date: dayjs(dreamProps?.date).subtract(5, 'hours').toDate().toString(),};
+
+    if(mode === 'update') {
         dreamObj = {
             id: dreamProps?.id,
             title: dreamProps?.title,
             date: dayjs(dreamProps?.date).toDate()?.toString(),
             description: dreamProps?.description?.toString()
-        }
-    }
+            }
+    } 
 
 
     const showDatePicker = () => {
@@ -63,12 +61,22 @@ const DreamForm = ({mode, dreamProps} : {mode: 'create' | 'update', dreamProps :
                 initialValues={{ id: dreamProps.id, title: 'New Dream Title', description: 'Dream Description', date: dayjs().toDate().toString(), }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { resetForm }) => {
-                    console.log('Submitted values:', values);
-                    console.info(dreamObj.id);
-                    dreamsCtx.updateDream(dreamObj.id, values);
+                    
+                    if(values.id) {
+                        // It means we are updating
+                        console.log('Submitted values:', values);
+                        console.info(dreamObj.id);
+                        dreamsCtx.updateDream(dreamObj.id, values);
+                    } else {
+                        // It means we are creating a new dream
+                        Alert.alert('New Dream', "You are creating a new dream!");
+                        const newDream = new Dream({id: Math.floor(Math.random() * 200), date: values.date.toString(), description: values.description, title: values.title});
+                        dreamsCtx.addDream(newDream);
+
+                    }
+                    // return;
                     // resetForm(); // Clear form after submission
                     // router.back();
-                    // Alert.alert('Submitting')
                 }}
             >
                 {({ setFieldValue, handleChange, handleBlur, handleSubmit, values, errors }) => (
@@ -110,7 +118,7 @@ const DreamForm = ({mode, dreamProps} : {mode: 'create' | 'update', dreamProps :
                             </ThemedView>
                             <ThemedView>
                                 <Pressable onPress={showDatePicker} style={{ width: 50, justifyContent: 'center', alignItems: 'center', }}>
-                                    <Ionicons name={"pencil-outline"} size={28} />
+                                    <ThemedText><Ionicons name={"pencil-outline"} size={28} /></ThemedText>
                                 </Pressable>
                             </ThemedView>
                         </ThemedView>
@@ -131,7 +139,9 @@ const DreamForm = ({mode, dreamProps} : {mode: 'create' | 'update', dreamProps :
 
                         {/* Submit button */}
                         <ThemedView style={{ marginVertical: 80, minHeight: 50, alignItems: 'center', }}>
-                            <Pressable onPress={handleSubmit} style={styles.button}>
+                            <Pressable onPress={() => {
+                                handleSubmit();
+                            }} style={styles.button}>
                                 <ThemedText style={{ fontSize: 24, textAlign: 'center', color: 'white', }}>Submit</ThemedText>
                             </Pressable>
                         </ThemedView>
