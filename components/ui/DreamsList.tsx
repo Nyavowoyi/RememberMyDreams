@@ -10,6 +10,7 @@ import DreamCardItem from './DreamCardItem'
 function renderDreamItem({ item }: { item: Dream }) {
 
   let dream = JSON.stringify(item);
+  console.debug(dream);
   return (
     <ThemedView style={style.cardItem}>
       <DreamCardItem key={item} dream={item.dream} 

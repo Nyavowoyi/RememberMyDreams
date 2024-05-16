@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 
 const DreamCardItem = ({ onPress, dream }: any) => {
 
-    console.warn(dream);
+    console.info(dream);
     const formattedDay = dayjs(dream.date).format('DD');
     const formattedMonth = dayjs(dream.date).format('MMM');
     const formattedTime = dayjs(dream.date).format('h:mm a');

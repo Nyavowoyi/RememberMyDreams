@@ -12,6 +12,7 @@ import * as Yup from 'yup';
 import dayjs from 'dayjs';
 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DreamForm from '@/components/ui/DreamForm';
 
 
 // The Form's validation schema
@@ -24,7 +25,9 @@ const validationSchema = Yup.object().shape({
 
 const DreamDetails = () => {
 
-  const { id, title, dream } = useLocalSearchParams();
+  const { id, dream } = useLocalSearchParams();
+  console.log('RECEIVED IN DREAM DETAILS..., dream => and below ', dream);
+  console.debug(dream);
   const dreamObj = JSON.parse(dream?.toString())?.dream;
   console.debug(dreamObj)
 
@@ -85,92 +88,8 @@ const DreamDetails = () => {
           </ThemedView>
 
           <ThemedView style={{ display: `${showUpdateScreen ? 'flex' : 'none'}`, }}>
-
-          
-
-                {/* Form */}
-                <Formik
-                  initialValues={{ id: dreamObj.id, title: title?.toString(), description: dreamObj.description?.toString(), date: dayjs(dreamObj.date || new Date()).toDate() }}
-                  validationSchema={validationSchema}
-                  onSubmit={(values, { resetForm }) => {
-                    console.log('Submitted values:', values);
-                    console.info(dreamObj.id);
-                    dreamsCtx.updateDream(dreamObj.id, values);
-                    // resetForm(); // Clear form after submission
-                    router.back();
-                    // Alert.alert('Submitting')
-                  }}
-                >
-                  {({ setFieldValue, handleChange, handleBlur, handleSubmit, values, errors }) => (
-                    <ThemedView>
-
-                      {/* Dream Title */}
-
-                      <ThemedText>Dream Title:</ThemedText>
-                      <TextInput
-                        accessibilityLabel='Dream Title'
-                        onChangeText={handleChange('title')}
-                        onBlur={handleBlur('title')}
-                        value={values.title}
-                        style={{ padding: 8, marginBottom: 10 }}
-                      />
-                      {errors.title && <ThemedText style={{ color: 'red' }}>{errors.title}</ThemedText>}
-
-                      {/* Dream Description */}
-                      <ThemedText>My Dream's full description:</ThemedText>
-                      <TextInput
-                        accessibilityLabel='Dream Description'
-                        onChangeText={handleChange('description')}
-                        onBlur={handleBlur('description')}
-                        value={values.description}
-                        style={{ padding: 8, marginBottom: 10 }}
-                        multiline={true}
-                        numberOfLines={3}
-                      />
-                      {errors.description && <ThemedText style={{ color: 'red' }}>{errors.description}</ThemedText>}
-
-
-                      {/* Date of dream */}
-                      <ThemedText>Date:</ThemedText>
-
-                      <ThemedView style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', }}>
-                        <ThemedView style={{ alignItems: 'flex-start', width: '75%', }}>
-                          <ThemedText>{dayjs(values.date.toString()).format('ddd, MMM D YYYY h:mm a')}</ThemedText>
-                          {errors && errors?.date && <ThemedText style={{ color: 'red' }}>{errors.date?.toString()}</ThemedText>}
-                        </ThemedView>
-                        <ThemedView>
-                          <Pressable onPress={showDatePicker} style={{ width: 50, justifyContent: 'center', alignItems: 'center', }}>
-                            <Ionicons name={"pencil-outline"} size={28} />
-                          </Pressable>
-                        </ThemedView>
-                      </ThemedView>
-
-
-                      <DateTimePickerModal
-                        isVisible={isDatePickerVisible}
-                        mode={"datetime"}
-                        onConfirm={(date: Date) => {
-                          console.info("A date has been picked: ", date);
-                          setFieldValue('date', date);
-                          hideDatePicker();
-                        }}
-                        onCancel={hideDatePicker}
-                      />
-
-
-
-                      {/* Submit button */}
-                      <ThemedView style={{ marginVertical: 80, minHeight: 50, alignItems: 'center', }}>
-                        <Pressable onPress={handleSubmit} style={styles.button}>
-                          <ThemedText style={{ fontSize: 24, textAlign: 'center', color: 'white', }}>Submit</ThemedText>
-                        </Pressable>
-                      </ThemedView>
-                    </ThemedView>
-
-                  )}
-                </Formik>
-
-              </ThemedView>
+            <DreamForm mode='update' dreamProps={{ id: dreamObj.id, title: dreamObj.title, description: dreamObj.description, date: dreamObj.date, }} />
+          </ThemedView>
 
         </ScrollView>
       </KeyboardAvoidingView>

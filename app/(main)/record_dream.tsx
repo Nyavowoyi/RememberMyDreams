@@ -3,11 +3,16 @@ import React from 'react'
 import { ThemedView } from '@/components/ThemedView'
 import { ThemedText } from '@/components/ThemedText'
 import DreamForm from '@/components/ui/DreamForm'
+import dayjs from 'dayjs'
+
+
 
 const RecordDream = () => {
+
+  const now = dayjs().subtract(8, 'hours').format('ddd, D MMM YYYY @ h:mm a');
   return (
     <ThemedView style={{ flex: 1,  }}>
-      <DreamForm mode='create' dreamProps={{  }} />
+      <DreamForm mode='create' dreamProps={{ id: null, title: `New dream on ${now}`, description: 'I had a dream which goes like ...',  date: dayjs().subtract(5, 'hours').toDate().toString(),}} />
     </ThemedView>
   )
 }
