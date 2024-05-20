@@ -15,7 +15,6 @@ const Home = () => {
   const iconColor = theme === 'light' ? Colors.light.icon : Colors.dark.icon
 
   const dreamsCtx = useContext(DreamsContext);
-  console.log('THE DREAMS CONTEXT', dreamsCtx.dreams[0]);
 
   return (
 

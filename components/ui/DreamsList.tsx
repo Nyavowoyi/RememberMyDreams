@@ -13,16 +13,30 @@ function renderDreamItem({ item }: { item: Dream }) {
   console.debug(dream);
   return (
     <ThemedView style={style.cardItem}>
-      <DreamCardItem key={item} dream={item.dream} 
-      onPress={() => router.navigate({ pathname: 'dream_details', params: { id: item.dream.id, title: item.dream.title, dream: dream} })} />
+      <DreamCardItem key={item} dream={item.dream}
+        onPress={() => router.navigate({ pathname: 'dream_details', params: { id: item.dream.id, title: item.dream.title, dream: dream } })}
+        />
     </ThemedView>
   )
 }
 
-const DreamsList = ({ dreamsList }: { dreamsList: Dream[] }) => {
+function renderEmptyDreams(emptyListHint : string) {
+  return (
+    <ThemedView style={{ flex: 1, padding: 24,  }}>
+      <ThemedText style={{ fontSize: 16 }}>{emptyListHint || "Add those dreams you had in the past for your own good."}</ThemedText>
+    </ThemedView>
+  )
+}
+
+const DreamsList = ({ dreamsList, emptyDreamsText = "" }: { dreamsList: Dream[], emptyDreamsText?: string | null }) => {
   return (
     <ThemedView>
-      <FlatList data={dreamsList} renderItem={renderDreamItem} keyExtractor={(item, index) => item.dream.id.toString()} />
+      <FlatList
+        data={dreamsList}
+        renderItem={renderDreamItem}
+        keyExtractor={(item, index) => item.dream.id.toString()}
+        ListEmptyComponent={renderEmptyDreams(emptyDreamsText)}
+        />
     </ThemedView>
   )
 }

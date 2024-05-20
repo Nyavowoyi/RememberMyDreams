@@ -28,23 +28,23 @@ export interface DreamPropsInterface {
     description: string | null | undefined,
     date: string | null | undefined,
 }
-const DreamForm = ({mode, dreamProps} : {mode: 'create' | 'update', dreamProps : DreamPropsInterface}) => {
+const DreamForm = ({ mode, dreamProps }: { mode: 'create' | 'update', dreamProps: DreamPropsInterface }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     // const [showUpdateScreen, toggleShowUpdateScreen] = useState(false);
     const dreamsCtx = useDreamsContext();
 
-    let dreamObj : DreamPropsInterface = { id: dreamProps.id || null, title: dreamProps?.title || `New dream on ${'ddd, MMM D YYYY h:mm a'}`, description: dreamProps?.description?.toString() || 'I had a dream which goes like ...',  date: dayjs(dreamProps?.date).toDate()?.toString() || dayjs(dreamProps?.date).subtract(5, 'hours').toDate().toString(),};
+    let dreamObj: DreamPropsInterface = { id: dreamProps.id || null, title: dreamProps?.title || `New dream on ${'ddd, MMM D YYYY h:mm a'}`, description: dreamProps?.description?.toString() || 'I had a dream which goes like ...', date: dayjs(dreamProps?.date).toDate()?.toString() || dayjs(dreamProps?.date).subtract(5, 'hours').toDate().toString(), };
 
-    if(mode === 'update') {
+    if (mode === 'update') {
         console.log('UPDATING THE DREAM!', dreamProps.date);
         dreamObj = {
             id: dreamProps?.id,
             title: dreamProps?.title,
             date: dayjs(dreamProps?.date).toDate()?.toString(),
             description: dreamProps?.description?.toString()
-            }
-    } 
+        }
+    }
 
 
     const showDatePicker = () => {
@@ -56,14 +56,13 @@ const DreamForm = ({mode, dreamProps} : {mode: 'create' | 'update', dreamProps :
     };
 
     return (
-        <ThemedView>
-            <ThemedText>DreamForm</ThemedText>
+        <ThemedView style={styles.container}>
             {/* Form */}
             <Formik
                 initialValues={{ id: dreamProps.id, title: dreamObj.title || 'New Dream Title', description: dreamObj.description || 'Dream Description', date: dayjs(dreamObj.date) || dayjs().toDate().toString(), }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { resetForm }) => {
-                    if(values.id) {
+                    if (values.id) {
                         // It means we are updating
                         console.log('Submitted values:', values);
                         console.info(dreamObj.id);
@@ -71,12 +70,12 @@ const DreamForm = ({mode, dreamProps} : {mode: 'create' | 'update', dreamProps :
                     } else {
                         // It means we are creating a new dream
                         Alert.alert('New Dream', "You are creating a new dream!");
-                        const newDream = new Dream({id: Math.floor(Math.random() * 200), date: dayjs(values.date.toString()).toDate().toString(), description: values.description, title: values.title});
+                        const newDream = new Dream({ id: Math.floor(Math.random() * 200), date: dayjs(values.date.toString()).toDate().toString(), description: values.description, title: values.title });
                         console.log('NEW DREAM ID IS', newDream.dream.id);
                         dreamsCtx.addDream(newDream);
-                        console.warn(newDream);
+                        let newDreamJSON = JSON.stringify(newDream);
                         // {"dream":{"id":2,"title":"dream short title","description":"Jesus is Lord!","date":"2024-05-13 4:09"}
-                        router.navigate({ pathname: 'dream_details', params: { id: dreamObj.id, title: dreamObj.title, dream: newDream } })
+                        router.navigate({ pathname: 'dream_details', params: { id: dreamObj.id, title: dreamObj.title, dream: newDreamJSON } })
                     }
                     // return;
                     // resetForm(); // Clear form after submission
@@ -146,7 +145,7 @@ const DreamForm = ({mode, dreamProps} : {mode: 'create' | 'update', dreamProps :
 
 
                         {/* Submit button */}
-                        <ThemedView style={{ marginVertical: 80, minHeight: 50, alignItems: 'center', }}>
+                        <ThemedView style={{ marginTop: 20, marginBottom: 20, minHeight: 50, alignItems: 'center', }}>
                             <Pressable onPress={(e: GestureResponderEvent) => {
                                 console.log('THIS IS WORKING');
                                 handleSubmit();
@@ -170,29 +169,26 @@ export default DreamForm
 
 const styles = StyleSheet.create({
     container: {
-      flexDirection: 'column',
-      padding: 8,
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      marginTop: 16,
-      backgroundColor: 'lightblue',
+        borderBottomColor: 'pink',
+        borderBottomWidth: 3,
+        borderStyle: 'solid',
     },
     icon: {
-      borderColor: 'black',
-      borderBottomWidth: 2,
-      width: 35,
+        borderColor: 'black',
+        borderBottomWidth: 2,
+        width: 35,
     },
     button: {
-      borderColor: 'purple',
-      borderWidth: 2,
-      backgroundColor: 'purple',
-      width: '50%',
-      padding: 16,
-      borderRadius: 8,
-      shadowColor: 'black',
-      shadowOffset: { height: 12, width: 0 },
-      shadowOpacity: 1,
-      shadowRadius: 10,
-      elevation: 2,
+        borderColor: 'purple',
+        borderWidth: 2,
+        backgroundColor: 'purple',
+        width: '50%',
+        padding: 16,
+        borderRadius: 8,
+        shadowColor: 'black',
+        shadowOffset: { height: 12, width: 0 },
+        shadowOpacity: 1,
+        shadowRadius: 10,
+        elevation: 2,
     }
-  })
+})

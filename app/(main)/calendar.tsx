@@ -1,4 +1,4 @@
-import { View, Text, Alert, FlatList, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Alert, FlatList, Pressable, StyleSheet, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -7,128 +7,113 @@ import * as Calendar from 'expo-calendar';
 import DropdownComponent from '@/components/ui/DropdownComponent';
 import dayjs from 'dayjs';
 
+import { Calendar as RNCalendar } from 'react-native-calendars';
+import { Markings } from 'react-native-calendars/src/calendar/day/marking';
+
+import CalendarStrip from 'react-native-calendar-strip';
+import { useDreamsContext } from '@/store/dreams-context';
+import { Dream, IDream } from '@/models/dream';
+import DreamsList from '@/components/ui/DreamsList';
 
 const CalendarHome = () => {
 
+  const [selectedDate, setSelectedDate] = useState(dayjs().toDate());
 
-  // const [selectedValue, setSelectedValue] = useState(null);
+  const dreamsCtx = useDreamsContext();
 
-  const [deviceCalendars, setDeviceCalendars] = useState(Array<{ id: string; value: number | string | null | undefined; }>);
-  const [selectedCalendarId, setSelectedCalendarId] = useState(null);
+  const [markedDatesArray, setMarkedDatesArray] = useState([]);
+
+  const filteredEvents = selectedDate ? markedDatesArray.filter((eventItem) => {
+    const eventDate = dayjs(eventItem.dream.date).format('YYYY-MM-DD');
+    return eventDate === dayjs(selectedDate).format('YYYY-MM-DD')
+  }) : [];
 
   useEffect(() => {
-    (async () => {
-      // Request for Calendar Permission
-      const { status } = await Calendar.requestCalendarPermissionsAsync();
-      if (status === 'granted') {
-        const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+    const markedDreams = dreamsCtx.dreams.map((dreamObj: Dream) => {
+      const dream = dreamObj.dream;
+      return ({
+        dream: {
+          ...dream,
+        },
+        // 'id': dream.id,
+        // 'date': dayjs(dream.date).format('YYYY-MM-DD'),
+        // 'title': `${dream.title}\n${dream.description}`,
+        'dots': [
+          {
+            color: 'white',
+            selectedColor: 'yellow',
+          },
+        ]
+      });
+    });
 
-        const deviceCals = calendars.map((calendar) => {
-          let val = '';
-          if (!calendar.name) {
-            val = calendar.title.trim();
-          } else {
-            val = calendar.title.trim();
-          }
-          return { value: calendar.id, label: val };
+    // console.log('MARKED DREAMS', [...new Set(markedDreams)]);
+    // setMarkedDatesArray([...new Set(markedDreams)]);
 
-        })
-        setDeviceCalendars(deviceCals);
+    setMarkedDatesArray(markedDreams);
 
-        console.log('Here are all your calendars:');
-        // console.log(calendars[5].title);
+  }, [])
 
-        // Search through the calendars and see if there is any calendar with the title for this app
-        const foundRMDCalendarId = calendars.filter((calendar) => {
-          console.log('WORKING WITH Cal ID => ', calendar.id, 'Name =>', calendar.name, 'TITLED => ', calendar.title);
-          return calendar.name == 'Remember My Dreams App' && calendar.title === 'Remember My Dreams App';
-        });
-
-        console.log('FOUND CALENDAR', foundRMDCalendarId);
-
-        if (foundRMDCalendarId && foundRMDCalendarId?.id) {
-          console.log('THE REMEMBER MY DREAMS APP WAS FOUND!');
-          console.info(foundRMDCalendarId);
-        } else {
-          // Then, we create the calendar :)
-          console.log('WE DID NOT FIND THE CALENDAR FOR THE APP SO WE WILL CREATE IT!');
-
-        }
-
-      } else {
-        Alert.alert('No Calendar Access', 'Oooh... Oh! You need this feature to really add dreams to your device\'s calendar.');
-      }
-    })();
-  }, []);
-
-
-  const handleCalendarSelection = (itemId: number) => {
-    setSelectedCalendarId(itemId);
-  };
-
-  const handleCreateEvent = async () => {
-    if (!selectedCalendarId) {
-      alert('Please select a calendar for the event.');
-      return;
-    } else {
-      alert('Calendar has been selected!');
-      try {
-        const newEventId = await Calendar.createEventAsync(selectedCalendarId, {
-          title: 'My Dream Event', // Set your event title
-          startDate: dayjs().subtract(3, 'days').toDate(), // Adjust date and time
-          endDate: dayjs().subtract(3, 'days').toDate(),
-          notes: 'The calendar note goes here. I think I will put the dream\'s full info here. But the user can feel free to also modify it!'
-        });
-        console.log('Event created successfully:', newEventId);
-      } catch (error) {
-        console.log('THERE WAS AN ERROR CREATING THE CALENDAR EVENT!');
-        console.warn(error);
-
-      }
-    }
-    // Use selectedCalendarId with Calendar.createEventAsync(...)
-  };
-
+  console.log(markedDatesArray);
 
   return (
-    <View>
 
-      <ThemedView>
-        <ThemedText>Select a Calendar to continue for storing your dreams.</ThemedText>
-        <DropdownComponent
-          data={deviceCalendars}
-          dropdownLabel='Calendar'
-          onChangeHandler={(val) => {
-            console.info('SELECTED =>', val.value);
-            setSelectedCalendarId(val.value);
-          }}
-          // onChangeHandler={handleCalendarSelection}
-          value={selectedCalendarId}
-        />
+    <ThemedView style={styles.container}>
 
-        <Pressable onPress={() => handleCreateEvent()} style={{ padding: 16, borderRadius: 8, borderWidth: 1, borderColor: 'grey', backgroundColor: 'blue', width: '50%', marginRight: 'auto', marginLeft: 'auto', display: 'flex', marginVertical: 20, }}>
-          <Text style={{ color: 'white' }}>Create Event</Text>
-        </Pressable>
+      <CalendarStrip
+        scrollable={true}
+        minDate={dayjs().subtract(120, 'years').toDate()}
+        showDate={true}
+        daySelectionAnimation={{ type: 'border', duration: 0, borderWidth: 1, borderHighlightColor: 'white' }}
+        selectedDate={dayjs(selectedDate).toDate()}
+        highlightDateNumberStyle={{ color: 'yellow' }}
+        highlightDateNameStyle={{ color: 'yellow' }}
+        markedDates={markedDatesArray}
+        markedDatesStyle={{ borderWidth: 1, borderColor: 'white', color: 'white' }}
+        showMonth={true}
+        style={{ height: 120, paddingTop: 20, paddingBottom: 10 }}
+        calendarColor={'#3343CE'}
+        calendarHeaderStyle={{ color: 'white' }}
+        dateNumberStyle={{ color: 'white' }}
+        dateNameStyle={{ color: 'white' }}
+        iconContainer={{ flex: 0.1 }}
+        onDateSelected={(date) => { console.log('THE SELECTED DATE:', date.format('YYYY-MM-DD')); setSelectedDate(date.toDate()); }}
+      />
 
-        {/* <FlatList data={deviceCalendars} renderItem={({ item }) => {
-        return (
-          <ThemedView>
-            <ThemedText style={{ fontSize: 18, padding: 8, }}>{item.value} | {item.label}</ThemedText>
-          </ThemedView>
-        )
-      }} keyExtractor={(item, index) => item?.value.toString()} /> */}
+      {selectedDate && (
+        <ThemedView>
+          {filteredEvents.length > 0 ? (
+            <ThemedView>
+              <ThemedText style={{ fontSize: 18, marginVertical: 16, textAlign: 'center', }}>My Dreams:</ThemedText>
+              <DreamsList dreamsList={filteredEvents} emptyDreamsText={"No dreams found!"} />
+            </ThemedView>
 
-      </ThemedView>
-    </View>
+          ) : (
+            <ThemedView style={{ paddingHorizontal: 24, }}>
+              <ThemedText style={{ fontSize: 18, marginVertical: 16, textAlign: 'center', borderWidth: 1, borderColor: '#ccddee', padding: 8, }}>No dreams on {dayjs(selectedDate).format('YYYY-MM-DD')}.</ThemedText>
+            </ThemedView>
+          )}
+{/* 
+          {filteredEvents.map((event, index) => (
+            <ThemedView key={index}>
+              <ThemedText key={event.date}>{event}</ThemedText>
+            </ThemedView>
+          ))} */}
 
+
+        </ThemedView>
+      )}
+
+    </ThemedView>
   )
+
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    // alignItems: 'center',
   },
 });
 

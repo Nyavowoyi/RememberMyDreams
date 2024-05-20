@@ -35,7 +35,13 @@ function dreamsReducer(state, action) {
         case 'ADD':
             return [action.payload, ...state];
         case 'REMOVE':
-            return state.filter((item) => item.id !== action.payload);
+            console.debug('DISPATCHED DELETING THE DREAM ID', action.payload);
+            state.filter(({dream}) => {
+                console.log('THE DREAM IS', dream);
+                dream.id !== action.payload
+            })
+
+            return state.filter(({dream}) => dream.id !== action.payload);
         case 'UPDATE':
             // console.log('OPERATION: UPDATE', 'dream id =>', action.payload.dreamId, 'new dream => ', action.payload.newDream);
             // console.log('STATE: ', state[0]);

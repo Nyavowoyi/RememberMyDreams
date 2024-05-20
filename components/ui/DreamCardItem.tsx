@@ -37,7 +37,7 @@ const DreamCardItem = ({ onPress, dream }: any) => {
                         <ThemedText style={styles.time}>{formattedTime}</ThemedText>
                     </ThemedView>
                     <ThemedView>
-                        <ThemedText style={styles.dream}>{dreamTitle}</ThemedText>
+                        <ThemedText style={styles.dream} numberOfLines={1}>{dreamTitle}</ThemedText>
                     </ThemedView>
                 </ThemedView>
 
