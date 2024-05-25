@@ -14,6 +14,7 @@ import CalendarStrip from 'react-native-calendar-strip';
 import { useDreamsContext } from '@/store/dreams-context';
 import { Dream, IDream } from '@/models/dream';
 import DreamsList from '@/components/ui/DreamsList';
+import { Ionicons } from '@expo/vector-icons';
 
 const CalendarHome = () => {
 
@@ -23,12 +24,18 @@ const CalendarHome = () => {
 
   const [markedDatesArray, setMarkedDatesArray] = useState([]);
 
-  const filteredEvents = selectedDate ? markedDatesArray.filter((eventItem) => {
-    const eventDate = dayjs(eventItem.dream.date).format('YYYY-MM-DD');
-    return eventDate === dayjs(selectedDate).format('YYYY-MM-DD')
+  const filteredDreams = selectedDate ? dreamsCtx.dreams.filter((dreamItem) => {
+    console.info('😤😤😤😤', dreamItem, selectedDate);
+    const chosenDate = dayjs(selectedDate).format('YYYY-MM-DD');
+    const dreamItemDate = dayjs(dreamItem.dream.date).format('YYYY-MM-DD');
+    return chosenDate === dreamItemDate;
   }) : [];
 
+
+
   useEffect(() => {
+
+    // Add a dot to every date on the calendar on which we had a dream
     const markedDreams = dreamsCtx.dreams.map((dreamObj: Dream) => {
       const dream = dreamObj.dream;
       return ({
@@ -45,6 +52,7 @@ const CalendarHome = () => {
           },
         ]
       });
+
     });
 
     // console.log('MARKED DREAMS', [...new Set(markedDreams)]);
@@ -54,17 +62,17 @@ const CalendarHome = () => {
 
   }, [])
 
-  console.log(markedDatesArray);
+  // console.log(markedDatesArray);
 
   return (
 
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container]}>
 
       <CalendarStrip
         scrollable={true}
         minDate={dayjs().subtract(120, 'years').toDate()}
         showDate={true}
-        daySelectionAnimation={{ type: 'border', duration: 0, borderWidth: 1, borderHighlightColor: 'white' }}
+        // daySelectionAnimation={{ type: 'border', duration: 0, borderWidth: 1, borderHighlightColor: 'white' }}
         selectedDate={dayjs(selectedDate).toDate()}
         highlightDateNumberStyle={{ color: 'yellow' }}
         highlightDateNameStyle={{ color: 'yellow' }}
@@ -77,15 +85,20 @@ const CalendarHome = () => {
         dateNumberStyle={{ color: 'white' }}
         dateNameStyle={{ color: 'white' }}
         iconContainer={{ flex: 0.1 }}
+        iconLeft={require('@/assets/images/back-arrow.png')}
+        iconLeftStyle={[styles.calendarIconStyle, { marginLeft: 10 }]}
+        iconRight={require('@/assets/images/right-arrow.png')}
+        iconRightStyle={[styles.calendarIconStyle, { marginRight: 10 }]}
         onDateSelected={(date) => { console.log('THE SELECTED DATE:', date.format('YYYY-MM-DD')); setSelectedDate(date.toDate()); }}
       />
 
       {selectedDate && (
-        <ThemedView>
-          {filteredEvents.length > 0 ? (
-            <ThemedView>
-              <ThemedText style={{ fontSize: 18, marginVertical: 16, textAlign: 'center', }}>My Dreams:</ThemedText>
-              <DreamsList dreamsList={filteredEvents} emptyDreamsText={"No dreams found!"} />
+
+        <ThemedView style={{ flex: 1, }}>
+          {filteredDreams.length > 0 ? (
+            <ThemedView style={{ flex: 1, paddingBottom: 20, marginTop: 30, }}>
+              <ThemedText style={{ fontSize: 18, marginVertical: 16, textAlign: 'center', }}>{dayjs(selectedDate).format('dddd, MMMM D, YYYY')}</ThemedText>
+              <DreamsList dreamsList={filteredDreams} />
             </ThemedView>
 
           ) : (
@@ -93,13 +106,12 @@ const CalendarHome = () => {
               <ThemedText style={{ fontSize: 18, marginVertical: 16, textAlign: 'center', borderWidth: 1, borderColor: '#ccddee', padding: 8, }}>No dreams on {dayjs(selectedDate).format('YYYY-MM-DD')}.</ThemedText>
             </ThemedView>
           )}
-{/* 
-          {filteredEvents.map((event, index) => (
+
+          {/* {filteredDreams.map((event, index) => (
             <ThemedView key={index}>
-              <ThemedText key={event.date}>{event}</ThemedText>
+              <ThemedText key={event.date}>{event.dream.title}</ThemedText>
             </ThemedView>
           ))} */}
-
 
         </ThemedView>
       )}
@@ -114,8 +126,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     // alignItems: 'center',
+    padding: 10,
   },
-});
+  calendarIconStyle: {
+    borderColor: 'white',
+    padding: 15,
+    borderRadius: 15,
+    borderColor: 'white',
+    borderWidth: 1,
+  },
 
+});
 
 export default CalendarHome;

@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { Dream, IDream } from '@/models/dream'
 import { useDreamsContext } from '@/store/dreams-context'
 import { router } from 'expo-router'
+import { useLocalDb } from '@/database/database'
 
 // The Form's validation schema
 const validationSchema = Yup.object().shape({
@@ -28,11 +29,13 @@ export interface DreamPropsInterface {
     description: string | null | undefined,
     date: string | null | undefined,
 }
-const DreamForm = ({ mode, dreamProps }: { mode: 'create' | 'update', dreamProps: DreamPropsInterface }) => {
+const DreamForm = ({ mode, dreamProps, onSubmitCb }: { mode: 'create' | 'update', dreamProps: DreamPropsInterface, onSubmitCb: (result: any) => void | any }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     // const [showUpdateScreen, toggleShowUpdateScreen] = useState(false);
     const dreamsCtx = useDreamsContext();
+
+    const LocalDbObj = useLocalDb();
 
     let dreamObj: DreamPropsInterface = { id: dreamProps.id || null, title: dreamProps?.title || `New dream on ${'ddd, MMM D YYYY h:mm a'}`, description: dreamProps?.description?.toString() || 'I had a dream which goes like ...', date: dayjs(dreamProps?.date).toDate()?.toString() || dayjs(dreamProps?.date).subtract(5, 'hours').toDate().toString(), };
 
@@ -61,21 +64,34 @@ const DreamForm = ({ mode, dreamProps }: { mode: 'create' | 'update', dreamProps
             <Formik
                 initialValues={{ id: dreamProps.id, title: dreamObj.title || 'New Dream Title', description: dreamObj.description || 'Dream Description', date: dayjs(dreamObj.date) || dayjs().toDate().toString(), }}
                 validationSchema={validationSchema}
-                onSubmit={(values, { resetForm }) => {
+                onSubmit={async (values, { resetForm }) => {
                     if (values.id) {
                         // It means we are updating
                         console.log('Submitted values:', values);
                         console.info(dreamObj.id);
                         dreamsCtx.updateDream(dreamObj.id, values);
+                        onSubmitCb({ values: values })
                     } else {
                         // It means we are creating a new dream
-                        Alert.alert('New Dream', "You are creating a new dream!");
-                        const newDream = new Dream({ id: Math.floor(Math.random() * 200), date: dayjs(values.date.toString()).toDate().toString(), description: values.description, title: values.title });
-                        console.log('NEW DREAM ID IS', newDream.dream.id);
-                        dreamsCtx.addDream(newDream);
-                        let newDreamJSON = JSON.stringify(newDream);
+
+                        let dateVal = dayjs(values.date).format('YYYY-MM-DD HH:mm');
+                        const newDream = await LocalDbObj.addDream({ title: values.title, date: dateVal, description: values.description });
+
+                        // const newDream = new Dream({ id: Math.floor(Math.random() * 200), date: dayjs(values.date.toString()).toDate().toString(), description: values.description, title: values.title });
+
+                        let newDreamId = newDream.lastInsertRowId;
+
+                        console.log('NEW DREAM ID IS', newDream.lastInsertRowId);
+
+                        let newDreamObj = new Dream({ id: newDreamId, date: dateVal, description: values.description, title: values.title });
+
+                        dreamsCtx.addDream(newDreamObj);
+
+                        let newDreamJSON = JSON.stringify(newDreamObj);
                         // {"dream":{"id":2,"title":"dream short title","description":"Jesus is Lord!","date":"2024-05-13 4:09"}
-                        router.navigate({ pathname: 'dream_details', params: { id: dreamObj.id, title: dreamObj.title, dream: newDreamJSON } })
+                        onSubmitCb(newDreamObj);
+                        router.dismiss();
+                        router.navigate({ pathname: 'dream_details', params: { id: newDreamId, title: values.title, dream: newDreamJSON } })
                     }
                     // return;
                     // resetForm(); // Clear form after submission

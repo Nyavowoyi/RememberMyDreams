@@ -11,6 +11,7 @@ import DreamForm from '@/components/ui/DreamForm';
 
 import { Calendar } from 'react-native-calendars';
 import { Markings } from 'react-native-calendars/src/calendar/day/marking';
+import { LocalDb, useLocalDb } from '@/database/database';
 
 const events = [
   { date: '2024-05-15', title: 'Meeting' },
@@ -40,6 +41,8 @@ const DreamDetails = () => {
     })
   }, [navigation])
 
+  const LocalDbObj = useLocalDb();
+
 
   const handleDreamDeletion = () => {
     Alert.alert('Delete', 'This will permanently delete this dream. Are you sure?',
@@ -48,19 +51,47 @@ const DreamDetails = () => {
         {
           text: 'Yes', style: 'destructive', isPreferred: true,
           onPress: () => {
-            try {
-              dreamsCtx.removeDream(dreamObj.id);
-              router.dismissAll();
-              router.replace('/');
-            } catch (error) {
-              // router.dismissAll();
-              // router.replace('/');
-              Alert.alert('Error', 'An error occured while deleting the dream. Kindly try again.')
+
+            (async () => {
+              const delDream = await LocalDbObj.deleteDream(dreamObj.id);
+              console.info('🧮🧮🧮🧮🧮', delDream);
+              let isDeletedFromDb = false;
+              isDeletedFromDb = delDream.changes != 0;
+
+              if (isDeletedFromDb) {
+                try {
+                  dreamsCtx.removeDream(dreamObj.id);
+                  router.dismissAll();
+                  router.replace('/');
+                } catch (error) {
+                  // router.dismissAll();
+                  // router.replace('/');
+                  Alert.alert('Error', 'An error occured while deleting the dream. Kindly try again.')
+                }
+              } else {
+                Alert.alert('Error', 'Dream could not be deleted. Kindly try again.')
+              }
+
             }
+            )();
           }
         },
       ]
     )
+  }
+
+  const handleFormSubmission = async (result: any) => {
+    console.log('🥵🥵🥵 FORM SUBMISSION HANDLING');
+    const vals = result.values;
+    console.log(vals);
+    const date = dayjs(vals.date).format('YYYY-MM-DD HH:mm');
+    const updatedDream = await LocalDbObj.updateDream({ id: vals.id, title: vals.title, description: vals.description, date: date });
+    if (updatedDream.changes === 1) {
+      console.log('😁😁😁🤙🤙 UPDATE SUCCESSFUL!');
+      Alert.alert('Updated', 'Update successful!');
+    } else {
+      console.log('😓😓😞😤😤 Unable to update the name.');
+    }
   }
 
 
@@ -70,21 +101,20 @@ const DreamDetails = () => {
         <ScrollView keyboardDismissMode='interactive'>
           <ThemedText>Dream ID: {id}</ThemedText>
 
-          <ThemedView style={[]}>
+          <ThemedView style={[{ width: '90%', }]}>
             <ThemedText>Title: {dreamObj.title}</ThemedText>
+            <ThemedText>Description: {dreamObj.description}</ThemedText>
           </ThemedView>
 
           <ThemedView style={{ display: `${showUpdateScreen ? 'flex' : 'none'}`, paddingHorizontal: 8, }}>
-
-            <DreamForm mode='update' dreamProps={{ id: dreamObj.id, title: dreamObj.title, description: dreamObj.description, date: dreamObj.date, }} />
+            <DreamForm mode='update' dreamProps={{ id: dreamObj.id, title: dreamObj.title, description: dreamObj.description, date: dreamObj.date, }} onSubmitCb={handleFormSubmission} />
           </ThemedView>
 
-          <ThemedView style={{ marginTop: 30, flexDirection: 'row', justifyContent: 'center', paddingVertical: 10, }}>
-            <Pressable
-              onPress={handleDreamDeletion}
-              style={styles.deleteBtn}
-            >
-              <ThemedText style={{ fontSize: 24, textAlign: 'center', fontWeight: '600', }}>Delete</ThemedText>
+          <ThemedView style={{ marginVertical: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 10, }}>
+            <Pressable onPress={handleDreamDeletion} style={({pressed}) => pressed && styles.deleteBtnPressed}>
+              <ThemedText style={{ paddingVertical: 15, }}>
+                <Ionicons name='trash-bin' size={36} />
+              </ThemedText>
             </Pressable>
 
           </ThemedView>
@@ -127,16 +157,18 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   deleteBtn: {
-    borderColor: 'orangered',
-    borderWidth: 2,
-    backgroundColor: 'red',
-    width: '50%',
+    borderWidth: 0,
     padding: 16,
     borderRadius: 8,
-    shadowColor: 'black',
-    shadowOffset: { height: 12, width: 0 },
+    shadowOffset: { height: 1, width: 2 },
     shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 2,
-  }
+    shadowRadius: 1,
+    // elevation: 0.5,
+  },
+
+  deleteBtnPressed: {
+    opacity: 0.50,
+    transform: [{rotateX: '180deg'}, {rotateZ: '-0.785398rad'}],
+    
+  },
 })

@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import DreamsContextProvider from '@/store/dreams-context';
+import { LocalDb } from '@/database/database';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -21,11 +22,22 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
+
+    try {
+      const db = new LocalDb();
+      db.initDb();
+      console.info('😁😁😘DATABASE HAS BEEN INITIALIZED 🥰');
+    } catch(e) {
+      console.info('🥹😤😤 There was an error initializing the local database.');
+      console.debug(e);
+    }
+
   }, [loaded]);
 
   if (!loaded) {
     return null;
   }
+
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>

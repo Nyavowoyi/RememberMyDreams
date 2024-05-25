@@ -16,7 +16,7 @@ import { Dream } from "@/models/dream";
 // }
 
 const DUMMY_DATA = [
-    new Dream({id: 2, title: 'dream short title', description: 'Jesus is Lord!', date: '2024-05-13 4:09'}),
+    // new Dream({id: 2, title: 'dream short title', description: 'Jesus is Lord!', date: '2024-05-13 4:09'}),
 ];
 
 export const DreamsContext = createContext({
@@ -24,6 +24,7 @@ export const DreamsContext = createContext({
     addDream: (dream) => {},
     removeDream: (dreamId) => {},
     updateDream: (dreamId, newDream) => {},
+    setDreams: (dreams) => {},
 });
 
 // Create a custom hook to use the context
@@ -32,6 +33,8 @@ export const useDreamsContext = () => useContext(DreamsContext);
 // The reducer function
 function dreamsReducer(state, action) {
     switch(action.type) {
+        case 'SET':
+            return action.payload;
         case 'ADD':
             return [action.payload, ...state];
         case 'REMOVE':
@@ -76,11 +79,16 @@ export default function DreamsContextProvider ({ children }) {
         dispatch({type: 'UPDATE', payload: {dreamId, newDream} });
     }
 
+    function setDreams(dreams) {
+        dispatch({type: 'SET', payload: dreams})
+    }
+
     const value = {
         dreams: state,
         addDream: addDream,
         removeDream: removeDream,
-        updateDream: updateDream
+        updateDream: updateDream,
+        setDreams: setDreams,
     };
 
     // const { dreams, addDream, removeDream, updateDream } = useDreamsContext();

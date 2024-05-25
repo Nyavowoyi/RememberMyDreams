@@ -21,9 +21,9 @@ const DreamCardItem = ({ onPress, dream }: any) => {
 
     return (
         <Pressable onPress={onPress}>
-            <ThemedView style={styles.root}>
+            <ThemedView style={[styles.root, ]}>
 
-                <ThemedView style={styles.dateContainer}>
+                <ThemedView style={[styles.dateContainer, { backgroundColor: 'transparent', }]}>
                     <ThemedText style={styles.date}>
                         {formattedDay}
                     </ThemedText>
@@ -32,17 +32,17 @@ const DreamCardItem = ({ onPress, dream }: any) => {
                     </ThemedText>
                 </ThemedView>
 
-                <ThemedView style={styles.middle}>
-                    <ThemedView>
+                <ThemedView style={[styles.middle, { backgroundColor: 'transparent', }]}>
+                    <ThemedView style={styles.addTransparency}>
                         <ThemedText style={styles.time}>{formattedTime}</ThemedText>
                     </ThemedView>
-                    <ThemedView>
+                    <ThemedView style={styles.addTransparency}>
                         <ThemedText style={styles.dream} numberOfLines={1}>{dreamTitle}</ThemedText>
                     </ThemedView>
                 </ThemedView>
 
-                <ThemedView style={styles.image}>
-                    <ThemedView>
+                <ThemedView style={[ styles.image, styles.addTransparency ]}>
+                    <ThemedView style={{ backgroundColor: 'transparent' }}>
                         <Ionicons name={iconName} size={32} color={theme === 'light' ? Colors.light.icon : Colors.dark.icon} />
                     </ThemedView>
                 </ThemedView>
@@ -98,4 +98,7 @@ const styles = StyleSheet.create({
         width: '25%',
         alignItems: 'center',
     },
+    addTransparency: {
+        backgroundColor: 'transparent',
+    } 
 });
