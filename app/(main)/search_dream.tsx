@@ -8,6 +8,7 @@ import DreamsList from '@/components/ui/DreamsList';
 import { DreamsContext, useDreamsContext } from '@/store/dreams-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Dream } from '@/models/dream';
+import { TouchableOpacity } from 'react-native';
 
 const SearchDream = () => {
 
@@ -33,7 +34,7 @@ const SearchDream = () => {
 
   const handleSearchQueryChange = (query: string) => {
     setSearchTerm(query);
-    filterDream(query);
+    filterDream(query.toLowerCase());
   }
 
 
@@ -45,21 +46,27 @@ const SearchDream = () => {
           {/* <TextInput placeholder="Find your dream..." autoFocus={true} value={searchTerm} onChangeText={handleSearchQueryChange} /> */}
         </ThemedView>
       ),
-      headerRight: () => (
-        <ThemedView style={{ flex: 0.85, margin: 0, padding: 0, borderColor: 'blue', borderWidth: 3, marginLeft: 10, }}>
-          <ScrollView horizontal={true}>
-            <ThemedView style={{ flex: 1, }}>
-              <TextInput autoFocus={true} placeholder='search' style={{ flex: 0.90, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'flex-start', paddingHorizontal: 8, paddingVertical: 0, width: '100%' }} onChangeText={(val) => handleSearchQueryChange(val)} />
-            </ThemedView>
-          </ScrollView>
-        </ThemedView>
-      ),
+      // headerRight: () => (
+      //   <ThemedView style={{ flex: 0.85, borderColor: 'lightgreen', borderWidth: 2, width: 200, }}>
+
+      //       </ThemedView>
+      // ),
     })
   })
 
   return (
-    <ThemedView style={{ flex: 1, }}>
-      <DreamsList dreamsList={filteredDreams} />
+    <ThemedView style={{ flex: 1, backgroundColor: 'orange', justifyContent: 'flex-start' }}>
+      <ThemedView style={{ flex: 0.15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 24, }}>
+        <TextInput autoCorrect={false} autoCapitalize='none' autoFocus={true} placeholder='Search for ...' style={{ flex: 1, borderColor: 'blue', borderWidth: 3, }} onChangeText={(val) => handleSearchQueryChange(val)} value={searchTerm} />
+        <TouchableOpacity onPress={() => { setSearchTerm(''); }} style={{ paddingVertical: 10, borderColor: 'orange', borderWidth: 2, }}>
+          <ThemedText style={{ paddingHorizontal: 20, paddingVertical: 5, }}>
+            <Ionicons name='close-circle' size={30} />
+          </ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
+      <ThemedView style={{ flex: 0.85, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 4, paddingVertical: 8, backgroundColor: 'purple' }}>
+        <DreamsList dreamsList={filteredDreams} />
+      </ThemedView>
     </ThemedView>
   )
 }
