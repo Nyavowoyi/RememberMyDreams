@@ -16,6 +16,14 @@ import { Dream, IDream } from '@/models/dream';
 import DreamsList from '@/components/ui/DreamsList';
 import { Ionicons } from '@expo/vector-icons';
 
+import * as advancedFormat from 'dayjs/plugin/advancedFormat'
+dayjs.extend(advancedFormat.default)
+
+// == OR
+// See 👉 https://day.js.org/docs/en/plugin/advanced-format
+// var advancedFormat = require('dayjs/plugin/advancedFormat')
+// dayjs.extend(advancedFormat)
+
 const CalendarHome = () => {
 
   const [selectedDate, setSelectedDate] = useState(dayjs().toDate());
@@ -36,29 +44,39 @@ const CalendarHome = () => {
   useEffect(() => {
 
     // Add a dot to every date on the calendar on which we had a dream
-    const markedDreams = dreamsCtx.dreams.map((dreamObj: Dream) => {
+
+    let availableDates : any = []; // Simply store the list of dates that are unique
+    let markedDates : any = []; // Stores the marked dates and their formatting
+
+    dreamsCtx.dreams.forEach((dreamObj: Dream) => {
+
       const dream = dreamObj.dream;
-      return ({
-        dream: {
-          ...dream,
-        },
-        // 'id': dream.id,
-        // 'date': dayjs(dream.date).format('YYYY-MM-DD'),
-        // 'title': `${dream.title}\n${dream.description}`,
-        'dots': [
-          {
-            color: 'white',
-            selectedColor: 'yellow',
-          },
-        ]
-      });
+
+      console.log('|||||||||||||THE DREAM||||||||||||');
+
+      console.log(dream);
+    
+      const dt = dayjs(dream.date).format('YYYY-MM-DD');
+      if(!availableDates.includes(dt)) {
+        availableDates.push(dt);
+        markedDates.push({
+          date: `${dt}`,
+          dots: [
+            {
+              color: '#dc073c',
+              selectedColor: '#3c07cd',
+            },
+          ],
+        })
+      }
+
 
     });
 
     // console.log('MARKED DREAMS', [...new Set(markedDreams)]);
     // setMarkedDatesArray([...new Set(markedDreams)]);
 
-    setMarkedDatesArray(markedDreams);
+    setMarkedDatesArray(markedDates);
 
   }, [])
 
@@ -72,7 +90,7 @@ const CalendarHome = () => {
         scrollable={true}
         minDate={dayjs().subtract(120, 'years').toDate()}
         showDate={true}
-        // daySelectionAnimation={{ type: 'border', duration: 0, borderWidth: 1, borderHighlightColor: 'white' }}
+        daySelectionAnimation={{ type: 'border', duration: 0, borderWidth: 1, borderHighlightColor: 'white' }}
         selectedDate={dayjs(selectedDate).toDate()}
         highlightDateNumberStyle={{ color: 'yellow' }}
         highlightDateNameStyle={{ color: 'yellow' }}
@@ -86,7 +104,7 @@ const CalendarHome = () => {
         dateNameStyle={{ color: 'white' }}
         iconContainer={{ flex: 0.1 }}
         iconLeft={require('@/assets/images/back-arrow.png')}
-        iconLeftStyle={[styles.calendarIconStyle, { marginLeft: 10 }]}
+        iconLeftStyle={[styles.calendarIconStyle, { marginLeft: 5 }]}
         iconRight={require('@/assets/images/right-arrow.png')}
         iconRightStyle={[styles.calendarIconStyle, { marginRight: 10 }]}
         onDateSelected={(date) => { console.log('THE SELECTED DATE:', date.format('YYYY-MM-DD')); setSelectedDate(date.toDate()); }}
@@ -97,7 +115,7 @@ const CalendarHome = () => {
         <ThemedView style={{ flex: 1, }}>
           {filteredDreams.length > 0 ? (
             <ThemedView style={{ flex: 1, paddingBottom: 20, marginTop: 30, }}>
-              <ThemedText style={{ fontSize: 18, marginVertical: 16, textAlign: 'center', }}>{dayjs(selectedDate).format('dddd, MMMM D, YYYY')}</ThemedText>
+              <ThemedText style={{ fontSize: 18, marginVertical: 16, textAlign: 'center', }}>{dayjs(selectedDate).format('dddd, Do MMMM, YYYY')}</ThemedText>
               <DreamsList dreamsList={filteredDreams} />
             </ThemedView>
 
@@ -130,9 +148,9 @@ const styles = StyleSheet.create({
   },
   calendarIconStyle: {
     borderColor: 'white',
-    padding: 15,
-    borderRadius: 15,
-    borderColor: 'white',
+    padding: 10,
+    borderRadius: 10,
+    borderBlockColor: 'white',
     borderWidth: 1,
   },
 
