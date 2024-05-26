@@ -46,9 +46,9 @@ const SearchDream = () => {
         </ThemedView>
       ),
       headerRight: () => (
-        <ThemedView style={{ flex: 0.85, margin: 0, padding: 0, borderColor: 'blue', borderWidth: 3, padding: 0, marginLeft: 10, }}>
+        <ThemedView style={{ flex: 0.85, margin: 0, padding: 0, borderColor: 'blue', borderWidth: 3, marginLeft: 10, }}>
           <ScrollView horizontal={true}>
-            <ThemedView stlye={{ flex: 1, }}>
+            <ThemedView style={{ flex: 1, }}>
               <TextInput autoFocus={true} placeholder='search' style={{ flex: 0.90, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'flex-start', paddingHorizontal: 8, paddingVertical: 0, width: '100%' }} onChangeText={(val) => handleSearchQueryChange(val)} />
             </ThemedView>
           </ScrollView>
