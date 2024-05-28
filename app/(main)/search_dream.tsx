@@ -57,14 +57,14 @@ const SearchDream = () => {
   return (
     <ThemedView style={{ flex: 1, backgroundColor: 'orange', justifyContent: 'flex-start' }}>
       <ThemedView style={{ flex: 0.15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 24, }}>
-        <TextInput autoCorrect={false} autoCapitalize='none' autoFocus={true} placeholder='Search for ...' style={{ flex: 1, borderColor: 'blue', borderWidth: 3, }} onChangeText={(val) => handleSearchQueryChange(val)} value={searchTerm} />
-        <TouchableOpacity onPress={() => { setSearchTerm(''); }} style={{ paddingVertical: 10, borderColor: 'orange', borderWidth: 2, }}>
+        <TextInput autoCorrect={false} autoCapitalize='none' autoFocus={true} placeholder='Search for ...' style={{ flex: 1, }} onChangeText={(val) => handleSearchQueryChange(val)} value={searchTerm} />
+        <TouchableOpacity onPress={() => { setSearchTerm(''); }} style={{ paddingVertical: 10, }}>
           <ThemedText style={{ paddingHorizontal: 20, paddingVertical: 5, }}>
             <Ionicons name='close-circle' size={30} />
           </ThemedText>
         </TouchableOpacity>
       </ThemedView>
-      <ThemedView style={{ flex: 0.85, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 4, paddingVertical: 8, backgroundColor: 'purple' }}>
+      <ThemedView style={{ flex: 0.85, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 4, paddingVertical: 8 }}>
         <DreamsList dreamsList={filteredDreams} />
       </ThemedView>
     </ThemedView>

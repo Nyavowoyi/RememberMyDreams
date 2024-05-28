@@ -1,4 +1,4 @@
-import { View, Text, Alert, FlatList, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Alert, FlatList, Pressable, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -15,18 +15,18 @@ const AddToCalendar = ({ title, details }: { title: string }) => {
 
   useEffect(() => {
     (async () => {
-      if(Calendar.PermissionStatus.DENIED || Calendar.PermissionStatus.UNDETERMINED) {
+      if (Calendar.PermissionStatus.DENIED || Calendar.PermissionStatus.UNDETERMINED) {
         requestCalendarPermission();
       }
     })();
   }, []);
 
 
-  async function requestCalendarPermission () {
+  async function requestCalendarPermission() {
     // Request for Calendar Permission
     const { status } = await Calendar.requestCalendarPermissionsAsync();
     if (status === 'granted') {
-      
+
       const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
 
       const deviceCals = calendars.map((calendar) => {
@@ -94,11 +94,17 @@ const AddToCalendar = ({ title, details }: { title: string }) => {
   };
 
 
+  const handleGetCalendarEvent = async () => {
+    const result = await Calendar.getEventAsync('282');
+    console.log('🗓️🗓️🗓️', result);
+  }
+
+
   return (
     <View>
 
       <ThemedView>
-        <ThemedText>Add event to this calendar: </ThemedText>
+        <ThemedText>Add dream to this calendar: </ThemedText>
         <DropdownComponent
           data={deviceCalendars}
           dropdownLabel='Calendar'
@@ -114,13 +120,9 @@ const AddToCalendar = ({ title, details }: { title: string }) => {
           <Text style={{ color: 'white' }}>Create Event</Text>
         </Pressable>
 
-        {/* <FlatList data={deviceCalendars} renderItem={({ item }) => {
-        return (
-          <ThemedView>
-            <ThemedText style={{ fontSize: 18, padding: 8, }}>{item.value} | {item.label}</ThemedText>
-          </ThemedView>
-        )
-      }} keyExtractor={(item, index) => item?.value.toString()} /> */}
+        <TouchableOpacity onPress={() => handleGetCalendarEvent()} style={{ padding: 16, borderRadius: 8, borderWidth: 1, borderColor: 'grey', backgroundColor: 'blue', width: '50%', marginRight: 'auto', marginLeft: 'auto', display: 'flex', marginVertical: 20, }}>
+          <Text style={{ color: 'white' }}>Get Event</Text>
+        </TouchableOpacity>
 
       </ThemedView>
     </View>

@@ -50,11 +50,11 @@ const Home = () => {
         </ThemedView>
 
 
-        <ThemedView>
+        {/* <ThemedView>
           <Link href={"device_calendar"} asChild>
             <Ionicons name='alert-circle' size={24} color={iconColor} />
           </Link>
-        </ThemedView>
+        </ThemedView> */}
         
       </ThemedView>
 

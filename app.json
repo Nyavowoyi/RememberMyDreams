@@ -19,7 +19,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR"
+      ],
+      "package": "com.nyavowoyiernest.RememberMyDreams"
     },
     "web": {
       "bundler": "metro",
@@ -33,10 +38,31 @@
         {
           "calendarPermission": "$PRODUCT_NAME needs to access your calendar to help you recall your dreams and create reminders."
         }
+      ],
+      [
+        "expo-dev-launcher",
+        {
+          "launchMode": "most-recent"
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          // "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b2811003-82e3-4a3b-9096-6115486e8407"
+      }
+    },
+    "owner": "nyavowoyiernest"
   }
 }
