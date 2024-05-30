@@ -1,11 +1,11 @@
-{
+export default {
   "expo": {
     "name": "RememberMyDreams",
     "slug": "RememberMyDreams",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "remember-my-dreams",
+    "scheme": "RememberMyDreams",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -24,7 +24,9 @@
         "android.permission.READ_CALENDAR",
         "android.permission.WRITE_CALENDAR"
       ],
-      "package": "com.nyavowoyiernest.RememberMyDreams"
+      "package": "com.nyavowoyiernest.RememberMyDreams",
+      // "googleServicesFile": process.env.GOOGLE_SERVICES_JSON
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -46,10 +48,10 @@
         }
       ],
       [
-        "@react-native-google-signin/google-signin",
-        {
+        "@react-native-google-signin/google-signin"
+        // {
           // "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
-        }
+        // }
       ]
     ],
     "experiments": {
