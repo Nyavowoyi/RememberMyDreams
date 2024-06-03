@@ -52,7 +52,9 @@ export default {
         // {
           // "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
         // }
-      ]
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
     ],
     "experiments": {
       "typedRoutes": true

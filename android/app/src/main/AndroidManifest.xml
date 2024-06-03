@@ -26,8 +26,9 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="remember-my-dreams"/>
+        <data android:scheme="RememberMyDreams"/>
         <data android:scheme="com.nyavowoyiernest.RememberMyDreams"/>
+        <data android:scheme="exp+remembermydreams"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

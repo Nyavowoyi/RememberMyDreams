@@ -22,7 +22,7 @@ const MainLayout = () => {
       <Stack.Screen name="calendar" options={{ headerShown: true, headerTitle: 'Calendar' }} />
       <Stack.Screen name="search_dream" options={{ headerShown: true, headerTitle: 'Search' }} />
       <Stack.Screen name="dream_details" options={{ headerShown: true, headerTitle: 'Dream Details' }} />
-      <Stack.Screen name="sign_in" options={{ headerTitle: 'Sign in' }} />
+      <Stack.Screen name="authentication" options={{ headerTitle: 'Welcome', headerShown: false, }} />
     </Stack>
   )
 }

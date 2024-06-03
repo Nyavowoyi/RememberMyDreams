@@ -51,7 +51,7 @@ const Home = () => {
 
 
         <ThemedView>
-          <Link href={"sign_in"} asChild>
+          <Link href={"authentication"} asChild>
             <Ionicons name='logo-google' size={24} color={iconColor} />
           </Link>
         </ThemedView>
