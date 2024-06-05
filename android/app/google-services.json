@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "319129091206",
+    "project_id": "remember-my-dreams",
+    "storage_bucket": "remember-my-dreams.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319129091206:android:bafb29b06af8f0fa14e507",
+        "android_client_info": {
+          "package_name": "com.nyavowoyiernest.RememberMyDreams"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "319129091206-gu3ijceuh3v4apqae5plhht0k8qg8u8c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nyavowoyiernest.RememberMyDreams",
+            "certificate_hash": "06d5bc0fa6f65b909e0a65e0dbdaa7a5e71cc6f6"
+          }
+        },
+        {
+          "client_id": "319129091206-t7m8qkf4d4dfablvnv9c1kt1g33vvi1t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdSppn4o4SsxVhazgdE5B1zo0fqdgie8I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "319129091206-t7m8qkf4d4dfablvnv9c1kt1g33vvi1t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
