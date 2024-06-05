@@ -25,19 +25,18 @@ export default function RootLayout() {
   }
 
   useEffect(() => {
-    // if (loaded) {
-    //   console.info('WE ARE HIDING THE SCREEN BECAUSE WE ARE DONE LOADING!')
-    //   // SplashScreen.hideAsync();
-    // }
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
 
-    // try {
-    //   const db = new LocalDb();
-    //   db.initDb();
-    //   console.info('😁😁😘DATABASE HAS BEEN INITIALIZED 🥰');
-    // } catch (e) {
-    //   console.info('🥹😤😤 There was an error initializing the local database.');
-    //   console.debug(e);
-    // }
+    try {
+      const db = new LocalDb();
+      db.initDb();
+      console.info('😁😁😘DATABASE HAS BEEN INITIALIZED 🥰');
+    } catch(e) {
+      console.info('🥹😤😤 There was an error initializing the local database.');
+      console.debug(e);
+    }
 
   }, [loaded]);
 

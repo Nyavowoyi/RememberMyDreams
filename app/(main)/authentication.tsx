@@ -4,11 +4,25 @@ import { ThemedView } from '@/components/ThemedView'
 import { ThemedText } from '@/components/ThemedText'
 import '@/firebaseConfig';
 
+<<<<<<< HEAD
+=======
+// import { GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
+
+// import * as Google from 'expo-auth-session/providers/google';
+
+// import * as WebBrowser from 'expo-web-browser';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+>>>>>>> 265e61ebbd26c088f40b0a59bb6812604b1bdc97
 import { ActivityIndicator, TextInput } from 'react-native-paper';
 
 
 // import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+<<<<<<< HEAD
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
+=======
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+>>>>>>> 265e61ebbd26c088f40b0a59bb6812604b1bdc97
 import { getAuth } from "firebase/auth";
 
 
@@ -58,6 +72,10 @@ const SignIn = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         setUserInfo(user);
+<<<<<<< HEAD
+=======
+        AsyncStorage.setItem('auth_user', JSON.stringify(user));
+>>>>>>> 265e61ebbd26c088f40b0a59bb6812604b1bdc97
       }).catch((error) => {
         console.log('THERE WAS AN ERROR');
         console.log(error.code);
